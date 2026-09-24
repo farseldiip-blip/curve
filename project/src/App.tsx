@@ -1,0 +1,182 @@
+import { useEffect, useRef, useState } from 'react';
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Instagram,
+  MapPin,
+  Menu as MenuIcon,
+  MoveRight,
+  Play,
+  X,
+} from 'lucide-react';
+
+const images = {
+  hero:
+    'https://images.pexels.com/photos/36430173/pexels-photo-36430173.jpeg?auto=compress&cs=tinysrgb&h=1100&w=1600',
+  pasta:
+    'https://images.pexels.com/photos/13068783/pexels-photo-13068783.jpeg?auto=compress&cs=tinysrgb&h=1000&w=900',
+  juice:
+    'https://images.pexels.com/photos/28053226/pexels-photo-28053226.jpeg?auto=compress&cs=tinysrgb&h=1100&w=800',
+  room:
+    'https://images.pexels.com/photos/7590623/pexels-photo-7590623.jpeg?auto=compress&cs=tinysrgb&h=900&w=1400',
+};
+
+function BrandLogo() {
+  return (
+    <span className="brand-logo">
+      <img src="/images/curve_img.jpg" alt="Curve Lounge" />
+    </span>
+  );
+}
+
+function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const navHeight = navRef.current?.offsetHeight ?? 100;
+      const heroBottom = document.getElementById('top')?.getBoundingClientRect().bottom ?? navHeight;
+      setIsScrolled(heroBottom < navHeight);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, []);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  return (
+    <main className="site-shell">
+      <nav ref={navRef} className={`site-nav ${isScrolled || menuOpen ? 'site-nav-scrolled' : ''}`} aria-label="Main navigation">
+        <a className="nav-brand" href="#top" aria-label="Curve Lounge home">
+          <BrandLogo />
+          <span className="brand-detail">lounge · kafr saqr</span>
+        </a>
+        <div className="nav-links">
+          <a href="#experience">The experience</a>
+          <a href="#menu">Menu</a>
+          <a href="#visit">Visit us</a>
+        </div>
+        <div className="nav-actions">
+          <a className="instagram-link" href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" aria-label="Curve Lounge on Instagram">
+            <Instagram size={17} strokeWidth={1.5} />
+          </a>
+          <a className="nav-cta" href="#menu">Explore menu <MoveRight size={16} /></a>
+          <button className="menu-toggle" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}>
+            {menuOpen ? <X size={22} /> : <MenuIcon size={22} />}
+          </button>
+        </div>
+      </nav>
+
+      {menuOpen && (
+        <div className="mobile-menu">
+          <a href="#experience" onClick={closeMenu}>The experience</a>
+          <a href="#menu" onClick={closeMenu}>Menu</a>
+          <a href="#visit" onClick={closeMenu}>Visit us</a>
+          <a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" onClick={closeMenu}>Instagram <ArrowUpRight size={16} /></a>
+        </div>
+      )}
+
+      <section className="hero" id="top">
+        <div className="hero-image-wrap">
+          <img src={images.hero} alt="Creamy pasta with herbs in a bowl" className="hero-image" />
+          <div className="hero-image-shade" />
+        </div>
+        <div className="hero-veil" />
+        <div className="hero-content">
+          <p className="eyebrow light">Italian pasta · fresh natural juices · Kafr Saqr</p>
+          <h1>Made for<br /><em>good moments.</em></h1>
+          <p className="hero-copy">Freshly plated pasta, bright natural juices, and a place to linger over both.</p>
+          <div className="hero-actions">
+            <a href="#menu" className="button button-light">Explore the menu <ArrowDownRight size={18} /></a>
+            <a href="#visit" className="text-link light-link">Find us <MoveRight size={18} /></a>
+          </div>
+        </div>
+        <div className="hero-feature">
+          <div className="hero-feature-image"><img src={images.juice} alt="Fresh juice served in a tall glass" /></div>
+          <div><span>Fresh, bright,</span><strong>always worth<br />the pause.</strong></div>
+        </div>
+        <a className="hero-scroll-cue" href="#experience" aria-label="Scroll to the Curve Lounge experience section"><span>scroll to explore</span><ArrowDownRight size={16} /></a>
+        <div className="hero-note"><span>01</span><i /><span>03</span></div>
+        <div className="hero-side-label">crafted for good moments</div>
+      </section>
+
+      <section className="intro section-pad" id="experience">
+        <div className="intro-mark"><BrandLogo /><span>since today</span></div>
+        <div className="intro-copy">
+          <p className="eyebrow">Welcome to Curve</p>
+          <h2>Good food has a way<br />of <em>bringing us closer.</em></h2>
+          <p className="body-copy">Curve Lounge is a contemporary space for Italian-inspired pasta, fresh natural juices, and the easy conversations that happen around a table.</p>
+          <a href="#menu" className="text-link dark-link">Discover the feeling <MoveRight size={18} /></a>
+        </div>
+        <div className="intro-image-frame">
+          <img src={images.room} alt="Warmly lit modern lounge interior" loading="lazy" />
+          <span className="image-caption">A place to linger</span>
+        </div>
+      </section>
+
+      <section className="categories section-pad">
+        <div className="section-heading">
+          <div><p className="eyebrow">At the table</p><h2>Made to be <em>tasted.</em></h2></div>
+          <p className="heading-aside">Two ways to make an ordinary day feel a little more special.</p>
+        </div>
+        <div className="category-grid">
+          <article className="category-card pasta-card">
+            <div className="category-photo"><img src={images.pasta} alt="Creamy pasta topped with fresh herbs" loading="lazy" /></div>
+            <div className="category-meta"><span>01 / 02</span><span>slow moments</span></div>
+            <h3>Italian<br /><em>pasta</em></h3>
+            <a className="round-arrow" href="#menu" aria-label="Explore Italian pasta"><ArrowUpRight size={19} /></a>
+          </article>
+          <article className="category-card juice-card">
+            <div className="category-photo"><img src={images.juice} alt="Fresh green and tropical juice in a tall glass" loading="lazy" /></div>
+            <div className="category-meta"><span>02 / 02</span><span>bright & fresh</span></div>
+            <h3>Natural<br /><em>juices</em></h3>
+            <a className="round-arrow" href="#menu" aria-label="Explore fresh natural juices"><ArrowUpRight size={19} /></a>
+          </article>
+        </div>
+      </section>
+
+      <section className="menu-preview section-pad" id="menu">
+        <div className="menu-intro"><p className="eyebrow">A taste of Curve</p><h2>Simple choices.<br /><em>Beautifully done.</em></h2><p className="body-copy">Our menu is made for following your mood — something comforting, something fresh, and always something worth sharing.</p><a className="button button-dark" href="#visit">View full menu <MoveRight size={17} /></a></div>
+        <div className="menu-board">
+          <div className="menu-board-top"><span>curve lounge</span><span>kafr saqr · egypt</span></div>
+          <div className="menu-board-title"><span>the</span><strong>menu</strong></div>
+          <div className="menu-lines">
+            <div><span>01</span><strong>Italian pasta</strong><i>freshly made moments</i></div>
+            <div><span>02</span><strong>Natural juices</strong><i>bright, cold, and fresh</i></div>
+            <div><span>03</span><strong>Something to share</strong><i>made for the middle of the table</i></div>
+          </div>
+          <div className="menu-board-bottom">fresh ingredients · unforgettable flavors</div>
+        </div>
+      </section>
+
+      <section className="social section-pad">
+        <div className="social-header"><div><p className="eyebrow">Follow along</p><h2>From <em>Curve Lounge.</em></h2></div><a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" className="text-link dark-link">@curve_lounge <ArrowUpRight size={17} /></a></div>
+        <div className="social-grid">
+          <div className="social-tile logo-tile"><img src="/images/curve_img.jpg" alt="Curve Lounge wordmark" loading="lazy" /></div>
+          <div className="social-tile"><img src={images.juice} alt="Fresh juice at Curve Lounge" loading="lazy" /><span className="tile-play"><Play size={15} fill="currentColor" /></span></div>
+          <div className="social-tile social-tile-pasta"><img src={images.pasta} alt="Pasta at Curve Lounge" loading="lazy" /></div>
+          <div className="social-tile quote-tile"><span>made for<br /><em>good company</em></span><Instagram size={28} strokeWidth={1.2} /></div>
+        </div>
+      </section>
+
+      <section className="visit" id="visit">
+        <div className="visit-map"><div className="map-grid" /><div className="map-pin"><MapPin size={22} fill="currentColor" /></div><span className="map-label">you are here</span></div>
+        <div className="visit-content"><p className="eyebrow">Come say hello</p><h2>Find your way<br /><em>to Curve.</em></h2><div className="address"><strong>Curve Lounge</strong><span>Main Hospital Road</span><span>Above Vodafone's branch</span><span>Kafr Saqr, Egypt</span></div><a href="https://www.google.com/maps/search/?api=1&query=Curve+Lounge+Kafr+Saqr+Egypt" target="_blank" rel="noreferrer" className="button button-dark">Open in maps <ArrowUpRight size={17} /></a></div>
+      </section>
+
+      <footer className="footer">
+        <div className="footer-main"><div><BrandLogo /><p>Fresh ingredients.<br />Unforgettable flavors.</p></div><div className="footer-links"><a href="#experience">The experience</a><a href="#menu">Menu</a><a href="#visit">Visit us</a><a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer">Instagram</a></div><a className="footer-top" href="#top" aria-label="Back to top"><ArrowUpRight size={19} /></a></div>
+        <div className="footer-bottom"><span>Curve Lounge · Kafr Saqr, Egypt</span><span>© 2026 Curve Lounge</span></div>
+      </footer>
+    </main>
+  );
+}
+
+export default App;
