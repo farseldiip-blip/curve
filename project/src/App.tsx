@@ -43,16 +43,25 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoaderLeaving, setIsLoaderLeaving] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('top');
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const loadingTimer = window.setTimeout(() => setIsLoading(false), 550);
-    return () => window.clearTimeout(loadingTimer);
+    const revealTimer = window.setTimeout(() => {
+      setIsContentVisible(true);
+      setIsLoaderLeaving(true);
+    }, 550);
+    const removeTimer = window.setTimeout(() => setIsLoading(false), 1000);
+    return () => {
+      window.clearTimeout(revealTimer);
+      window.clearTimeout(removeTimer);
+    };
   }, []);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !isContentVisible) return;
 
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
 
@@ -75,7 +84,7 @@ function App() {
 
     revealItems.forEach((item) => observer.observe(item));
     return () => observer.disconnect();
-  }, [isLoading]);
+  }, [isLoading, isContentVisible]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -115,18 +124,17 @@ function App() {
 
   const closeMenu = () => setMenuOpen(false);
 
-  if (isLoading) {
-    return (
-      <div className="loading-screen" role="status" aria-label="Loading Curve Lounge">
-        <div className="loading-mark" aria-hidden="true"><img src="/images/curve_img.jpg" alt="" /></div>
-        <span>Preparing your table</span>
-        <i className="loading-line" aria-hidden="true" />
-      </div>
-    );
-  }
-
   return (
-    <div className="site-shell">
+    <div className={`app-viewport ${isContentVisible ? 'is-content-visible' : ''}`}>
+      {isLoading && (
+        <div className={`loading-screen ${isLoaderLeaving ? 'is-leaving' : ''}`} role="status" aria-label="Loading Curve Lounge">
+          <div className="loading-mark" aria-hidden="true"><img src="/images/curve_img.jpg" alt="" /></div>
+          <span>Preparing your table</span>
+          <i className="loading-line" aria-hidden="true" />
+        </div>
+      )}
+      <div className="page-content" aria-hidden={!isContentVisible}>
+        <div className="site-shell">
       <header className="site-header">
         <nav ref={navRef} className={`site-nav ${isScrolled || menuOpen ? 'site-nav-scrolled' : ''}`} aria-label="Main navigation">
         <a className="nav-brand" href="#top" aria-label="Curve Lounge home">
@@ -262,6 +270,8 @@ function App() {
           </a>
         ))}
       </nav>
+        </div>
+      </div>
     </div>
   );
 }
