@@ -108,14 +108,14 @@ h1 em, h2 em, h3 em { font-weight: 400; }
 @media (max-width: 800px) {
   body { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
   .site-shell, .site-shell main, .site-shell section, .site-shell footer, .hero-content, .menu-intro, .menu-board, .category-card, .social-grid { min-width: 0; }
-  .hero { min-height: 100dvh; display: flex; flex-direction: column; align-items: stretch; justify-content: center; padding: calc(72px + 18px) 0 calc(76px + env(safe-area-inset-bottom, 0px)); }
-  .hero-content { width: 100%; max-width: 100%; padding: 0 24px; z-index: 3; }
-  .hero h1 { max-width: 100%; font-size: clamp(46px, 15vw, 76px); line-height: .86; margin-bottom: 18px; }
-  .hero-content .eyebrow { margin-bottom: 16px; }
-  .hero-copy { max-width: min(100%, 270px); margin-bottom: 22px; }
-  .hero-actions { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
+  .hero { min-height: 100dvh; display: flex; flex-direction: column; align-items: stretch; justify-content: stretch; padding: calc(72px + 28px) 0 calc(76px + env(safe-area-inset-bottom, 0px)); }
+  .hero-content { width: 100%; max-width: 100%; min-height: 0; flex: 1; display: flex; flex-direction: column; padding: 0 24px; z-index: 3; }
+  .hero h1 { max-width: 100%; font-size: clamp(46px, 15vw, 76px); line-height: .86; margin-bottom: 24px; }
+  .hero-content .eyebrow { margin-bottom: 22px; }
+  .hero-copy { max-width: min(100%, 270px); margin-bottom: 30px; }
+  .hero-actions { display: grid; grid-template-columns: 1fr; gap: 0; width: 100%; margin-top: auto; }
   .hero-actions .button-light { justify-content: flex-start; justify-self: start; width: fit-content; max-width: 100%; min-height: 46px; padding: 14px 18px; font-size: 10px; }
-  .hero-secondary { display: grid; grid-template-columns: auto minmax(112px, 128px) auto; align-items: center; gap: 10px; width: 100%; padding-top: 12px; border-top: 1px solid rgba(245,238,229,.24); }
+  .hero-secondary { display: grid; grid-template-columns: auto minmax(112px, 128px) auto; align-items: center; gap: 10px; width: 100%; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(245,238,229,.24); }
   .hero-secondary .text-link { min-height: 44px; }
   .hero-feature { position: static; right: auto; bottom: auto; width: 128px; min-width: 0; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; }
   .hero-feature-image { width: 44px; height: 62px; }
