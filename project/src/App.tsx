@@ -110,7 +110,7 @@ function App() {
           }
         });
       },
-      { threshold: 0.12, rootMargin: '0px 0px -36px' },
+      { threshold: 0.01, rootMargin: '0px 0px -10%' },
     );
 
     revealItems.forEach((item) => observer.observe(item));
@@ -120,22 +120,29 @@ function App() {
   useEffect(() => {
     if (isLoading) return;
 
-    const sections = mobileNavItems
-      .map(({ id }) => document.getElementById(id))
-      .filter((section): section is HTMLElement => Boolean(section));
+    const updateActiveSection = () => {
+      const scrollPosition = window.scrollY;
+      const sectionOffset = 96;
+      let currentSection = 'top';
 
-    if (!('IntersectionObserver' in window)) return;
+      ['top', 'experience', 'menu', 'visit'].forEach((id) => {
+        const section = document.getElementById(id);
+        if (!section) return;
+        const sectionTop = section.getBoundingClientRect().top + scrollPosition;
+        if (sectionTop <= scrollPosition + sectionOffset) currentSection = id;
+      });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleSection = entries.find((entry) => entry.isIntersecting);
-        if (visibleSection) setActiveSection(visibleSection.target.id);
-      },
-      { rootMargin: '-30% 0px -55%', threshold: 0 },
-    );
+      if (scrollPosition <= 8) currentSection = 'top';
+      setActiveSection(currentSection);
+    };
 
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+    return () => {
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+    };
   }, [isLoading]);
 
   useEffect(() => {
@@ -225,7 +232,7 @@ function App() {
         <div className="hero-side-label">crafted for good moments</div>
       </section>
 
-      <section className="intro section-pad" id="experience" data-reveal aria-labelledby="experience-title">
+      <section className="intro section-pad" id="experience" aria-labelledby="experience-title">
         <div className="intro-mark"><BrandLogo /><span>since today</span></div>
         <div className="intro-copy">
           <p className="eyebrow">Welcome to Curve</p>

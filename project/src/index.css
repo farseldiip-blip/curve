@@ -122,7 +122,7 @@ h1 em, h2 em, h3 em { font-weight: 400; }
   .hero-feature strong { font-size: 15px; }
   .hero-note { position: static; bottom: auto; left: auto; width: auto; align-self: center; justify-self: end; gap: 6px; margin: 0; padding: 0; border: 0; }
   .hero-note i { width: 30px; }
-  .intro { display: flex; flex-direction: column; align-items: stretch; gap: 48px; }
+  .intro { display: flex; flex-direction: column; align-items: stretch; gap: 48px; padding-top: 56px; }
   .intro-copy { max-width: 100%; }
   .intro-image-frame { max-width: calc(100% - 16px); margin: 0 16px 34px 0; }
   .intro-image-frame img { aspect-ratio: 4 / 5; max-height: 520px; object-position: center; }
