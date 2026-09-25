@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ArrowDownRight,
   ArrowUpRight,
+  Heart,
+  Home,
   Instagram,
   MapPin,
   Menu as MenuIcon,
   MoveRight,
   Play,
+  Utensils,
   X,
 } from 'lucide-react';
 
@@ -21,6 +24,13 @@ const images = {
     'https://images.pexels.com/photos/7590623/pexels-photo-7590623.jpeg?auto=compress&cs=tinysrgb&h=900&w=1400',
 };
 
+const mobileNavItems = [
+  { id: 'top', label: 'Home', href: '#top', icon: Home },
+  { id: 'menu', label: 'Menu', href: '#menu', icon: Utensils },
+  { id: 'experience', label: 'Experience', href: '#experience', icon: Heart },
+  { id: 'visit', label: 'Visit Us', href: '#visit', icon: MapPin },
+];
+
 function BrandLogo() {
   return (
     <span className="brand-logo">
@@ -33,6 +43,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState('top');
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -63,6 +74,27 @@ function App() {
     );
 
     revealItems.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const sections = mobileNavItems
+      .map(({ id }) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    if (!('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleSection = entries.find((entry) => entry.isIntersecting);
+        if (visibleSection) setActiveSection(visibleSection.target.id);
+      },
+      { rootMargin: '-30% 0px -55%', threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, [isLoading]);
 
@@ -110,7 +142,7 @@ function App() {
           <a className="instagram-link" href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" aria-label="Curve Lounge on Instagram">
             <Instagram size={17} strokeWidth={1.5} />
           </a>
-          <a className="nav-cta" href="#menu">Explore menu <MoveRight size={16} /></a>
+          <a className="nav-cta" href="#visit">Plan your visit <MoveRight size={16} /></a>
           <button className="menu-toggle" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}>
             {menuOpen ? <X size={22} /> : <MenuIcon size={22} />}
           </button>
@@ -221,6 +253,15 @@ function App() {
         <div className="footer-main"><div><BrandLogo /><p>Fresh ingredients.<br />Unforgettable flavors.</p></div><div className="footer-links"><a href="#experience">The experience</a><a href="#menu">Menu</a><a href="#visit">Visit us</a><a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer">Instagram</a></div><a className="footer-top" href="#top" aria-label="Back to top"><ArrowUpRight size={19} /></a></div>
         <div className="footer-bottom"><span>Curve Lounge · Kafr Saqr, Egypt</span><span>© 2026 Curve Lounge</span></div>
       </footer>
+
+      <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
+        {mobileNavItems.map(({ id, label, href, icon: Icon }) => (
+          <a key={id} href={href} aria-current={activeSection === id ? 'location' : undefined}>
+            <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
+            <span>{label}</span>
+          </a>
+        ))}
+      </nav>
     </div>
   );
 }
