@@ -24,7 +24,7 @@ const images = {
 function BrandLogo() {
   return (
     <span className="brand-logo">
-      <img src="/images/curve_img.jpg" alt="Curve Lounge" />
+      <img src="/images/curve_img.jpg" alt="Curve Lounge logo" />
     </span>
   );
 }
@@ -32,7 +32,39 @@ function BrandLogo() {
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const loadingTimer = window.setTimeout(() => setIsLoading(false), 550);
+    return () => window.clearTimeout(loadingTimer);
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+    if (!('IntersectionObserver' in window)) {
+      revealItems.forEach((item) => item.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -36px' },
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [isLoading]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,9 +83,20 @@ function App() {
 
   const closeMenu = () => setMenuOpen(false);
 
+  if (isLoading) {
+    return (
+      <div className="loading-screen" role="status" aria-label="Loading Curve Lounge">
+        <div className="loading-mark" aria-hidden="true"><img src="/images/curve_img.jpg" alt="" /></div>
+        <span>Preparing your table</span>
+        <i className="loading-line" aria-hidden="true" />
+      </div>
+    );
+  }
+
   return (
-    <main className="site-shell">
-      <nav ref={navRef} className={`site-nav ${isScrolled || menuOpen ? 'site-nav-scrolled' : ''}`} aria-label="Main navigation">
+    <div className="site-shell">
+      <header className="site-header">
+        <nav ref={navRef} className={`site-nav ${isScrolled || menuOpen ? 'site-nav-scrolled' : ''}`} aria-label="Main navigation">
         <a className="nav-brand" href="#top" aria-label="Curve Lounge home">
           <BrandLogo />
           <span className="brand-detail">lounge · kafr saqr</span>
@@ -74,16 +117,18 @@ function App() {
         </div>
       </nav>
 
-      {menuOpen && (
-        <div className="mobile-menu">
-          <a href="#experience" onClick={closeMenu}>The experience</a>
-          <a href="#menu" onClick={closeMenu}>Menu</a>
-          <a href="#visit" onClick={closeMenu}>Visit us</a>
-          <a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" onClick={closeMenu}>Instagram <ArrowUpRight size={16} /></a>
-        </div>
-      )}
+        {menuOpen && (
+          <div className="mobile-menu">
+            <a href="#experience" onClick={closeMenu}>The experience</a>
+            <a href="#menu" onClick={closeMenu}>Menu</a>
+            <a href="#visit" onClick={closeMenu}>Visit us</a>
+            <a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" onClick={closeMenu}>Instagram <ArrowUpRight size={16} /></a>
+          </div>
+        )}
+      </header>
 
-      <section className="hero" id="top">
+      <main>
+        <section className="hero" id="top">
         <div className="hero-image-wrap">
           <img src={images.hero} alt="Creamy pasta with herbs in a bowl" className="hero-image" />
           <div className="hero-image-shade" />
@@ -107,34 +152,34 @@ function App() {
         <div className="hero-side-label">crafted for good moments</div>
       </section>
 
-      <section className="intro section-pad" id="experience">
+      <section className="intro section-pad" id="experience" data-reveal aria-labelledby="experience-title">
         <div className="intro-mark"><BrandLogo /><span>since today</span></div>
         <div className="intro-copy">
           <p className="eyebrow">Welcome to Curve</p>
-          <h2>Good food has a way<br />of <em>bringing us closer.</em></h2>
+          <h2 id="experience-title">Good food has a way<br />of <em>bringing us closer.</em></h2>
           <p className="body-copy">Curve Lounge is a contemporary space for Italian-inspired pasta, fresh natural juices, and the easy conversations that happen around a table.</p>
           <a href="#menu" className="text-link dark-link">Discover the feeling <MoveRight size={18} /></a>
         </div>
-        <div className="intro-image-frame">
+        <div className="intro-image-frame" data-reveal>
           <img src={images.room} alt="Warmly lit modern lounge interior" loading="lazy" />
           <span className="image-caption">A place to linger</span>
         </div>
       </section>
 
-      <section className="categories section-pad">
+      <section className="categories section-pad" data-reveal aria-labelledby="categories-title">
         <div className="section-heading">
-          <div><p className="eyebrow">At the table</p><h2>Made to be <em>tasted.</em></h2></div>
+          <div><p className="eyebrow">At the table</p><h2 id="categories-title">Made to be <em>tasted.</em></h2></div>
           <p className="heading-aside">Two ways to make an ordinary day feel a little more special.</p>
         </div>
         <div className="category-grid">
           <article className="category-card pasta-card">
-            <div className="category-photo"><img src={images.pasta} alt="Creamy pasta topped with fresh herbs" loading="lazy" /></div>
+            <div className="category-photo" data-reveal><img src={images.pasta} alt="Creamy pasta topped with fresh herbs" loading="lazy" /></div>
             <div className="category-meta"><span>01 / 02</span><span>slow moments</span></div>
             <h3>Italian<br /><em>pasta</em></h3>
             <a className="round-arrow" href="#menu" aria-label="Explore Italian pasta"><ArrowUpRight size={19} /></a>
           </article>
           <article className="category-card juice-card">
-            <div className="category-photo"><img src={images.juice} alt="Fresh green and tropical juice in a tall glass" loading="lazy" /></div>
+            <div className="category-photo" data-reveal><img src={images.juice} alt="Fresh green and tropical juice in a tall glass" loading="lazy" /></div>
             <div className="category-meta"><span>02 / 02</span><span>bright & fresh</span></div>
             <h3>Natural<br /><em>juices</em></h3>
             <a className="round-arrow" href="#menu" aria-label="Explore fresh natural juices"><ArrowUpRight size={19} /></a>
@@ -142,9 +187,9 @@ function App() {
         </div>
       </section>
 
-      <section className="menu-preview section-pad" id="menu">
-        <div className="menu-intro"><p className="eyebrow">A taste of Curve</p><h2>Simple choices.<br /><em>Beautifully done.</em></h2><p className="body-copy">Our menu is made for following your mood — something comforting, something fresh, and always something worth sharing.</p><a className="button button-dark" href="#visit">View full menu <MoveRight size={17} /></a></div>
-        <div className="menu-board">
+      <section className="menu-preview section-pad" id="menu" data-reveal aria-labelledby="menu-title">
+        <div className="menu-intro"><p className="eyebrow">A taste of Curve</p><h2 id="menu-title">Simple choices.<br /><em>Beautifully done.</em></h2><p className="body-copy">Our menu is made for following your mood — something comforting, something fresh, and always something worth sharing.</p><a className="button button-dark" href="#visit">View full menu <MoveRight size={17} /></a></div>
+        <div className="menu-board" data-reveal>
           <div className="menu-board-top"><span>curve lounge</span><span>kafr saqr · egypt</span></div>
           <div className="menu-board-title"><span>the</span><strong>menu</strong></div>
           <div className="menu-lines">
@@ -156,9 +201,9 @@ function App() {
         </div>
       </section>
 
-      <section className="social section-pad">
-        <div className="social-header"><div><p className="eyebrow">Follow along</p><h2>From <em>Curve Lounge.</em></h2></div><a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" className="text-link dark-link">@curve_lounge <ArrowUpRight size={17} /></a></div>
-        <div className="social-grid">
+      <section className="social section-pad" data-reveal aria-labelledby="social-title">
+        <div className="social-header"><div><p className="eyebrow">Follow along</p><h2 id="social-title">From <em>Curve Lounge.</em></h2></div><a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer" className="text-link dark-link">@curve_lounge <ArrowUpRight size={17} /></a></div>
+        <div className="social-grid" data-reveal>
           <div className="social-tile logo-tile"><img src="/images/curve_img.jpg" alt="Curve Lounge wordmark" loading="lazy" /></div>
           <div className="social-tile"><img src={images.juice} alt="Fresh juice at Curve Lounge" loading="lazy" /><span className="tile-play"><Play size={15} fill="currentColor" /></span></div>
           <div className="social-tile social-tile-pasta"><img src={images.pasta} alt="Pasta at Curve Lounge" loading="lazy" /></div>
@@ -166,16 +211,17 @@ function App() {
         </div>
       </section>
 
-      <section className="visit" id="visit">
+      <section className="visit" id="visit" data-reveal aria-labelledby="visit-title">
         <div className="visit-map"><div className="map-grid" /><div className="map-pin"><MapPin size={22} fill="currentColor" /></div><span className="map-label">you are here</span></div>
-        <div className="visit-content"><p className="eyebrow">Come say hello</p><h2>Find your way<br /><em>to Curve.</em></h2><div className="address"><strong>Curve Lounge</strong><span>Main Hospital Road</span><span>Above Vodafone's branch</span><span>Kafr Saqr, Egypt</span></div><a href="https://www.google.com/maps/search/?api=1&query=Curve+Lounge+Kafr+Saqr+Egypt" target="_blank" rel="noreferrer" className="button button-dark">Open in maps <ArrowUpRight size={17} /></a></div>
-      </section>
+        <div className="visit-content"><p className="eyebrow">Come say hello</p><h2 id="visit-title">Find your way<br /><em>to Curve.</em></h2><div className="address"><strong>Curve Lounge</strong><span>Main Hospital Road</span><span>Above Vodafone's branch</span><span>Kafr Saqr, Egypt</span></div><a href="https://www.google.com/maps/search/?api=1&query=Curve+Lounge+Kafr+Saqr+Egypt" target="_blank" rel="noreferrer" className="button button-dark">Open in maps <ArrowUpRight size={17} /></a></div>
+        </section>
+      </main>
 
-      <footer className="footer">
+      <footer className="footer" data-reveal>
         <div className="footer-main"><div><BrandLogo /><p>Fresh ingredients.<br />Unforgettable flavors.</p></div><div className="footer-links"><a href="#experience">The experience</a><a href="#menu">Menu</a><a href="#visit">Visit us</a><a href="https://www.instagram.com/curve_lounge/" target="_blank" rel="noreferrer">Instagram</a></div><a className="footer-top" href="#top" aria-label="Back to top"><ArrowUpRight size={19} /></a></div>
         <div className="footer-bottom"><span>Curve Lounge · Kafr Saqr, Egypt</span><span>© 2026 Curve Lounge</span></div>
       </footer>
-    </main>
+    </div>
   );
 }
 
