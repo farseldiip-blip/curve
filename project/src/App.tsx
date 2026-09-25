@@ -216,16 +216,14 @@ function App() {
           <p className="eyebrow light">Italian pasta · fresh natural juices · Kafr Saqr</p>
           <h1>Made for<br /><em>good moments.</em></h1>
           <p className="hero-copy">Freshly plated pasta, bright natural juices, and a place to linger over both.</p>
-          <div className="hero-actions">
-            <a href="#menu" className="button button-light hero-primary-cta">Explore the menu <ArrowDownRight size={18} /></a>
-            <div className="hero-secondary">
-              <a href="#visit" className="text-link light-link">Find us <MoveRight size={18} /></a>
-              <div className="hero-feature">
-                <div className="hero-feature-image"><img src={images.juice} alt="Fresh juice served in a tall glass" /></div>
-                <div><span>Fresh, bright,</span><strong>always worth<br />the pause.</strong></div>
-              </div>
-              <div className="hero-note"><span>01</span><i /><span>03</span></div>
+          <a href="#menu" className="button button-light hero-primary-cta">Explore the menu <ArrowDownRight size={18} /></a>
+          <div className="hero-secondary">
+            <a href="#visit" className="text-link light-link">Find us <MoveRight size={18} /></a>
+            <div className="hero-feature">
+              <div className="hero-feature-image"><img src={images.juice} alt="Fresh juice served in a tall glass" /></div>
+              <div><span>Fresh, bright,</span><strong>always worth<br />the pause.</strong></div>
             </div>
+            <div className="hero-note"><span>01</span><i /><span>03</span></div>
           </div>
         </div>
         <a className="hero-scroll-cue" href="#experience" aria-label="Scroll to the Curve Lounge experience section"><span>scroll to explore</span><ArrowDownRight size={16} /></a>
