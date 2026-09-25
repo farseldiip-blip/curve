@@ -230,6 +230,9 @@ function App() {
         </div>
         <a className="hero-scroll-cue" href="#experience" aria-label="Scroll to the Curve Lounge experience section"><span>scroll to explore</span><ArrowDownRight size={16} /></a>
         <div className="hero-side-label">crafted for good moments</div>
+        <svg className="hero-wave" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path d="M0 58C210 96 420 8 650 34c252 28 416 58 790 6v60H0Z" />
+        </svg>
       </section>
 
       <section className="intro section-pad" id="experience" aria-labelledby="experience-title">
