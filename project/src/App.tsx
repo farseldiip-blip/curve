@@ -49,6 +49,37 @@ function App() {
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    const resetScrollPosition = () => {
+      const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      window.requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      });
+    };
+
+    window.history.scrollRestoration = 'manual';
+    resetScrollPosition();
+    const resetAfterLoadTimer = window.setTimeout(resetScrollPosition, 1100);
+
+    return () => {
+      window.clearTimeout(resetAfterLoadTimer);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    document.documentElement.style.scrollBehavior = previousScrollBehavior;
+  }, [isLoading]);
+
+  useEffect(() => {
     const revealTimer = window.setTimeout(() => {
       setIsContentVisible(true);
       setIsLoaderLeaving(true);
@@ -179,16 +210,18 @@ function App() {
           <h1>Made for<br /><em>good moments.</em></h1>
           <p className="hero-copy">Freshly plated pasta, bright natural juices, and a place to linger over both.</p>
           <div className="hero-actions">
-            <a href="#menu" className="button button-light">Explore the menu <ArrowDownRight size={18} /></a>
-            <a href="#visit" className="text-link light-link">Find us <MoveRight size={18} /></a>
+            <a href="#menu" className="button button-light hero-primary-cta">Explore the menu <ArrowDownRight size={18} /></a>
+            <div className="hero-secondary">
+              <a href="#visit" className="text-link light-link">Find us <MoveRight size={18} /></a>
+              <div className="hero-feature">
+                <div className="hero-feature-image"><img src={images.juice} alt="Fresh juice served in a tall glass" /></div>
+                <div><span>Fresh, bright,</span><strong>always worth<br />the pause.</strong></div>
+              </div>
+              <div className="hero-note"><span>01</span><i /><span>03</span></div>
+            </div>
           </div>
         </div>
-        <div className="hero-feature">
-          <div className="hero-feature-image"><img src={images.juice} alt="Fresh juice served in a tall glass" /></div>
-          <div><span>Fresh, bright,</span><strong>always worth<br />the pause.</strong></div>
-        </div>
         <a className="hero-scroll-cue" href="#experience" aria-label="Scroll to the Curve Lounge experience section"><span>scroll to explore</span><ArrowDownRight size={16} /></a>
-        <div className="hero-note"><span>01</span><i /><span>03</span></div>
         <div className="hero-side-label">crafted for good moments</div>
       </section>
 
